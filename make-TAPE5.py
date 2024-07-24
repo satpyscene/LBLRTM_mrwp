@@ -1,3 +1,4 @@
+# 该程序由fortran程序翻译调整而来，在循环中需要的位置启用pl脚本（里边主要是./lblrtm命令 即运行模型）
 import numpy as np
 import math
 import subprocess
