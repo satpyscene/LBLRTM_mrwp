@@ -96,30 +96,31 @@ for iadd in range(1):
             with open('TAPE5', 'w') as file:
                 CXID = '83P 55level profile to creat transmittance database'
                 file.write(f"${CXID}\n")
-                file.write(f" HI=1 F4=1 CN=1 AE=0 EM=0 SC=0 FI=0 PL=0 TS=1 AM=0 MG=0 LA=0 OD=1 XS=0   00   00\n")
-                file.write(f"{bwn:10.3f}{ewn:10.3f}                                                  REJ=0     1.000E-01\n")
-                file.write(f"{0:7}{2:5}{-55:5}{1:5}{1:5}{7:5}{1:5}{0:5}{0:10.3f}{0:10.3f}\n")
+                file.write(f" HI=1 F4=1 CN=1 AE=0 EM=0 SC=0 FI=0 PL=0 TS=0 AM=1 MG=0 LA=0 OD=1 XS=0   00   00\n")
+                file.write(f"{bwn:10.3f}{ewn:10.3f}                                                            REJ=0     1.000E-01\n")
+                file.write(f"{0:5}{2:5}{-55:5}{1:5}{1:5}{7:5}{1:5}{0:5}{0:10.3f}{0:10.3f}\n")
                 file.write(f"{p[lev-1, iprof]:10.3f}{p[0, iprof]:10.3f}{180.000:10.3f}\n")
                 column_data = p[:, iprof]
                 # 以8个一组分批写入数据
-                file.writelines([f"{' '.join([f'{x:10.3f}' for x in column_data[i:i+8]])}\n" for i in range(0, len(column_data), 8)])
-                file.write(f"{-55:5}{'INPUT FOR CAMEX':9}\n")
+                file.writelines([''.join([f"{x:10.3f}".rstrip() for x in column_data[i:i+8]]) + '\n' for i in range(0, len(column_data), 8)])
+                # file.writelines([f"{'   '.join([f'{x:10.3f}' for x in column_data[i:i+8]])}\n" for i in range(0, len(column_data), 8)])
+                file.write(f"{-55:5}         {'INPUT FOR CAMEX'}\n")
                 for i in range(lev):
-                    file.write(f"{height[i]:10.3f}{p[i, iprof]:10.3f}{t[i, iprof]:10.3f}  {'AA'} {'L'} {'AAAAAAA'}\n")
-                    file.write(f"{wv[i, iprof]:15.8e}{blank[i]:15.8e}{blank[i]:15.8e}{blank[i]:15.8e}{blank[i]:15.8e}{blank[i]:15.8e}{blank[i]:15.8e}\n")
-                file.write(f"-1.\n")
+                    file.write(f"{height[i]:10.3f}{p[i, iprof]:10.3f}{t[i, iprof]:10.3f}     {'AA'} {'L'} {'AAAAAAA'}\n")
+                    file.write(f"{wv[i, iprof]:15.8E}{blank[i]:15.8E}{blank[i]:15.8E}{blank[i]:15.8E}{blank[i]:15.8E}{blank[i]:15.8E}{blank[i]:15.8E}\n")
+                file.write(f"-1.0\n")
                 file.write(f"$ Transfer to ASCII plotting data\n")
-                file.write(f" HI=0 F4=0 CN=0 AE=0 EM=0 SC=0 FI=0 PL=1 TS=0 AM=0 MG=0 LA=0 OD=0 XS=0 0 0 0\n")
+                file.write(f" HI=0 F4=0 CN=0 AE=0 EM=0 SC=0 FI=0 PL=1 TS=0 AM=0 MG=0 LA=0 OD=0 XS=0   0   0\n")
                 file.write(f"# Plot title not used\n")
-                file.write(f"{bwn:10.4f}{ewn:10.4f}{10.2000:10.4f}{100.000:10.4f}{5:5}{0:5}{12:5}{0:5}{1.000:10.3f}{0:5}{0:5}{0:5}\n")
-                file.write(f"{0.0000:10.4f}{1.2000:10.4f}{7.0200:10.3f}{0.2000:10.3f}{4:5}{0:5}{1:5}{1:5}{0:5}{0:5}{0:5}{3:5}{27:5}\n")
-                file.write(f"{bwn:10.4f}{ewn:10.4f}{10.2000:10.4f}{100.000:10.4f}{5:5}{0:5}{12:5}{0:5}{1.000:10.3f}{0:5}{0:5}{0:5}\n")
-                file.write(f"{0.0000:10.4f}{1.2000:10.4f}{7.0200:10.3f}{0.2000:10.3f}{4:5}{0:5}{1:5}{1:5}{0:5}{0:5}{0:5}{3:5}{28:5}\n")
-                file.write(f"-1.\n")
+                file.write(f"{bwn:10.4f}{ewn:10.4f}{10.2000:10.4f}{100.000:10.4f}{5:5}{0:5}{12:5}{0:5}{1.000:10.3f}{0:2}{0:3}{0:5}\n")
+                file.write(f"{0.0000:10.4f}{1.2000:10.4f}{7.0200:10.3f}{0.2000:10.3f}{4:5}{0:5}{1:5}{1:5}{0:5}{0:5}{0:2}{3:5}{27:3}\n")
+                file.write(f"{bwn:10.4f}{ewn:10.4f}{10.2000:10.4f}{100.000:10.4f}{5:5}{0:5}{12:5}{0:5}{1.000:10.3f}{0:2}{0:3}{0:5}\n")
+                file.write(f"{0.0000:10.4f}{1.2000:10.4f}{7.0200:10.3f}{0.2000:10.3f}{4:5}{0:5}{1:5}{1:5}{0:5}{0:5}{0:2}{3:5}{28:3}\n")
+                file.write(f"-1.0\n")
                 file.write(f"%%%%%\n")
-            # TAPE5制作好后，运行pl脚本，pl脚本中写着运行模型和输出提示的命令
-            subprocess.run(['./script_run_example.pl'], check=True)
-            bwn_str = f"{bwn:9.3f}".strip()
-            source = 'ODint_001'
-            destination = f'./OD001save_H2O/ODint_001-{bwn_str}'
-            shutil.move(source, destination)
+            # # TAPE5制作好后，运行pl脚本，pl脚本中写着运行模型和输出提示的命令
+            # subprocess.run(['./script_run_example.pl'], check=True)
+            # bwn_str = f"{bwn:9.3f}".strip()
+            # source = 'ODint_001'
+            # destination = f'./OD001save_H2O/ODint_001-{bwn_str}'
+            # shutil.move(source, destination)
