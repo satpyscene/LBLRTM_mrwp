@@ -1,5 +1,7 @@
 import numpy as np
 import math
+import subprocess
+import shutil
 
 lev = 55
 prof = 50
@@ -115,3 +117,9 @@ for iadd in range(1):
                 file.write(f"{0.0000:10.4f}{1.2000:10.4f}{7.0200:10.3f}{0.2000:10.3f}{4:5}{0:5}{1:5}{1:5}{0:5}{0:5}{0:5}{3:5}{28:5}\n")
                 file.write(f"-1.\n")
                 file.write(f"%%%%%\n")
+            # TAPE5制作好后，运行pl脚本，pl脚本中写着运行模型和输出提示的命令
+            subprocess.run(['./script_run_example.pl'], check=True)
+            bwn_str = f"{bwn:9.3f}".strip()
+            source = 'ODint_001'
+            destination = f'./OD001save_H2O/ODint_001-{bwn_str}'
+            shutil.move(source, destination)
